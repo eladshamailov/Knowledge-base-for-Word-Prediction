@@ -65,4 +65,23 @@ All this information is sent to the reducer.
 In the reducer , the 3 words will become the key , and the value will be the pair and it's occurence.
 
 ### Step5
+Step5 takes as input Step3 and Step4 output.
+If it's the output of Step3, the key is the 3 words and the value is the occurence.
+If it's the output of Step4 , the key is the 3 words and the value is the pair and it's occurence.
+All the information is sent to the reducer.
+In the reducer , we start with the setup function. The setup function loads from the hdfs all Step1 output.
+After this , we calculate the probability of the apperance of 3 words in the text.
+The way to calculate it is:
 
+All the varibels are taken from the values in the context.
+N1 - from the map that we initialized in the setup
+
+N2 - if the value is pair , we take the occurence
+
+N3 - if the value is the occurence it takes it
+
+C0 - calculate in the setup , if it * take the occurence
+
+C1 - from the map that we initialized in the setup
+
+C2 - take the occurence from the value if its the correct w1 
