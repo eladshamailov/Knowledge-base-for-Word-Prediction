@@ -11,7 +11,7 @@ The output of the system is a list of word trigrams (w1,w2,w3) and their conditi
 The list will be ordered: (1) by w1w2, ascending; (2) by the probability for w3, descending.
 
 For example:
-
+```
 קפה נמס עלית 0.6
 קפה נמס מגורען 0.4
 
@@ -28,7 +28,7 @@ For example:
 שולחן עבודה מעץ 0.3
 
 …
-
+```
 ## Team
 Elad Shamailov 308540202
 Mor Bitan 305537383
