@@ -73,9 +73,17 @@ In the reducer , we start with the setup function. The setup function loads from
 After this , we calculate the probability of the apperance of 3 words in the text.
 The way to calculate it is:
 
-<p align="center">
+<p>
   <img src="https://github.com/eladshamailov/Assignment2/blob/master/probability%20Calculation.png?raw=true"/>
 </p>
+
+Where:
+* N1 is the number of times w3 occurs.
+* N2 is the number of times sequence (w2,w3) occurs.
+* N3 is the number of times sequence (w1,w2,w3) occurs.
+* C0 is the total number of word instances in the corpus.
+* C1 is the number of times w2 occurs.
+* C2 is the number of times sequence (w1,w2) occurs.
 
 All the variables are taken from the values in the context.
 N1 - from the map that we initialized in the setup
@@ -91,3 +99,8 @@ C1 - from the map that we initialized in the setup
 C2 - take the occurence from the value if its the correct w1 
 
 then , the key is the 3 words and the value is the probability
+
+## Step6
+Step6 takes as input the output of Step5.
+We compare with the CompareClass two strings , if the first two words are the same , we return wich one has the higher probability.
+In the mapper , the output is the same key and value sorted by decending value of the probability.
