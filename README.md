@@ -86,17 +86,12 @@ Where:
 * C2 is the number of times sequence (w1,w2) occurs.
 
 All the variables are taken from the values in the context.
-N1 - from the map that we initialized in the setup
-
-N2 - if the value is pair , we take the occurence
-
-N3 - if the value is the occurence it takes it
-
-C0 - calculate in the setup , if it * take the occurence
-
-C1 - from the map that we initialized in the setup
-
-C2 - take the occurence from the value if its the correct w1 
+* N1 - from the map that we initialized in the setup
+* N2 - if the value is pair , we take the occurence
+* N3 - if the value is the occurence it takes it
+* C0 - calculate in the setup , if it * take the occurence
+* C1 - from the map that we initialized in the setup
+* C2 - take the occurence from the value if its the correct w1 
 
 then , the key is the 3 words and the value is the probability
 
