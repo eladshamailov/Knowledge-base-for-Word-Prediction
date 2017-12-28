@@ -73,6 +73,10 @@ In the reducer , we start with the setup function. The setup function loads from
 After this , we calculate the probability of the apperance of 3 words in the text.
 The way to calculate it is:
 
+<p align="center">
+  <img src="https://github.com/eladshamailov/Assignment2/blob/master/probability%20Calculation.png?raw=true"/>
+</p>
+
 All the variables are taken from the values in the context.
 N1 - from the map that we initialized in the setup
 
