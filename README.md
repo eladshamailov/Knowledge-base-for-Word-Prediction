@@ -40,9 +40,29 @@ If all the jars exists , run the Main.jar
 ## Description
 Our application has 6 steps and a Main:
 
-### step1
+### Step1
 Step1 takes as input the 1-gram corpus and parses it line by line.
 For each line from the 1-gram corpus , it creates a line with the word and its occurrence , and another line with  * and the same occurrence , and sends it to the reducer.
-In the reducer , we combine all the occurences by key. In addition , we sum up all the occurrences with * in order to get the sum of all the words occurences.
+In the reducer , we combine all the occurences by key. Note that we also sum up all the occurrences with * in order to get the sum of all the words occurences.
 
-### step2
+### Step2
+Step2 takes as input the 2-gram corpus and parses it line by line.
+For each line from the 2-gram corpus , it creates a line with the 2 words and their occurrence and sends it to the reducer.
+In the reducer , we combine all the occurences by key.
+
+### Step3
+Step3 takes as input the 3-gram corpus and parses it line by line.
+For each line from the 3-gram corpus , it creates a line with the 3 words and their occurrence and sends it to the reducer.
+In the reducer , we combine all the occurences by key.
+
+### Step4
+Step4 takes as input Step2 and Step3 output.
+If it's the output of Step2, it's a pair and the key will be the pair and the value is the occurence.
+If it's the output of Step3 , it's 3 words , so we will split it into 2 pairs.
+The first pair is the first and second words. the key is the pair and the value is the 3 words and their occurence.
+The second pair is the second and third words. the key is the pair and the value is the 3 words and their occurence.
+All this information is sent to the reducer.
+In the reducer , the 3 words will become the key , and the value will be the pair and it's occurence.
+
+### Step5
+
