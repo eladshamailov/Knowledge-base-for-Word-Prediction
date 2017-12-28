@@ -104,3 +104,7 @@ then , the key is the 3 words and the value is the probability
 Step6 takes as input the output of Step5.
 We compare with the CompareClass two strings , if the first two words are the same , we return wich one has the higher probability.
 In the mapper , the output is the same key and value sorted by decending value of the probability.
+
+## Main
+The main includes all the steps and the arguments that we need.
+We create a cluster , give it all the steps and arguments and we let the application to run.
