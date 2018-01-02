@@ -107,6 +107,75 @@ We create a cluster , give it all the steps and arguments and we let the applica
 
 ## Statistics 
 
+### Step1
+
+#### Without local aggregation
+```
+ Map input records=44400490
+ Map output records=88800536
+ Map output bytes=860143841
+ Reduce input records=88800536
+ Reduce output records=645262
+```
+
+#### With local aggregation
+
+### Step2
+
+#### Without local aggregation
+```
+		Map input records=252069581
+		Map output records=233334882
+		Map output bytes=4707102779
+  Reduce input records=233334882
+		Reduce output records=4758874
+```  
+#### With local aggregation
+
+### Step3
+
+#### Without local aggregation
+```
+		Map input records=163471963
+		Map output records=119255104
+		Map output bytes=2903980410
+ 	Reduce input records=119255104
+		Reduce output records=2803960
+```
+#### With local aggregation
+
+### Step4
+
+#### Without local aggregation
+```
+		Map input records=7562834
+		Map output records=10366794
+		Map output bytes=425801365
+ 	Reduce input records=10366794
+		Reduce output records=5163654
+```
+#### With local aggregation
+
+
+### Step5
+
+#### Without local aggregation
+```
+		Map input records=7967614
+		Map output records=7967614
+		Map output bytes=296368509
+  Reduce input records=7967614
+		Reduce output records=2972416
+```
+
+#### With local aggregation
+
+
+### Step6
+
+#### Without local aggregation
+
+#### With local aggregation
 
 
 ## Analysis
