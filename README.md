@@ -30,9 +30,9 @@ For example:
 …
 ```
 ## Team
-Elad Shamailov 308540202
+Elad Shamailov 308540202 (eladsham)
 
-Mor Bitan 305537383
+Mor Bitan 305537383 (morbita)
 
 ## Instruction
 Have Step1.jar - Step6.jar and Main.jar existing on the s3 bucket : assignment2dspmor .
