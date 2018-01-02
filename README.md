@@ -124,11 +124,11 @@ We create a cluster , give it all the steps and arguments and we let the applica
 
 #### Without local aggregation
 ```
-		Map input records=252069581
-		Map output records=233334882
-		Map output bytes=4707102779
-  Reduce input records=233334882
-		Reduce output records=4758874
+Map input records=252069581
+Map output records=233334882
+Map output bytes=4707102779
+Reduce input records=233334882
+Reduce output records=4758874
 ```  
 #### With local aggregation
 
@@ -136,11 +136,11 @@ We create a cluster , give it all the steps and arguments and we let the applica
 
 #### Without local aggregation
 ```
-		Map input records=163471963
-		Map output records=119255104
-		Map output bytes=2903980410
- 	Reduce input records=119255104
-		Reduce output records=2803960
+Map input records=163471963
+Map output records=119255104
+Map output bytes=2903980410
+Reduce input records=119255104
+Reduce output records=2803960
 ```
 #### With local aggregation
 
@@ -148,11 +148,11 @@ We create a cluster , give it all the steps and arguments and we let the applica
 
 #### Without local aggregation
 ```
-		Map input records=7562834
-		Map output records=10366794
-		Map output bytes=425801365
- 	Reduce input records=10366794
-		Reduce output records=5163654
+Map input records=7562834
+Map output records=10366794
+Map output bytes=425801365
+Reduce input records=10366794
+Reduce output records=5163654
 ```
 #### With local aggregation
 
@@ -161,11 +161,11 @@ We create a cluster , give it all the steps and arguments and we let the applica
 
 #### Without local aggregation
 ```
-		Map input records=7967614
-		Map output records=7967614
-		Map output bytes=296368509
-  Reduce input records=7967614
-		Reduce output records=2972416
+Map input records=7967614
+Map output records=7967614
+Map output bytes=296368509
+Reduce input records=7967614
+Reduce output records=2972416
 ```
 
 #### With local aggregation
