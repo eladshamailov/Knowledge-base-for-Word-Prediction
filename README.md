@@ -174,6 +174,13 @@ Reduce output records=2972416
 ### Step6
 
 #### Without local aggregation
+```
+	Map input records=2972416
+	Map output records=2972416
+	Map output bytes=131663962
+ Reduce input records=2972416
+	Reduce output records=2972416
+ ```
 
 #### With local aggregation
 
