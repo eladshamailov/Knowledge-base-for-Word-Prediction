@@ -295,3 +295,6 @@ the pair is: "תורה שלמה"
 תורה שלמה היא 0.03043921157562914	
 תורה שלמה על 0.03008306261598419
 ```
+
+## Output
+the Output file can be downloaded here: https://s3-us-west-2.amazonaws.com/assignment2dspmor/OurOutput
