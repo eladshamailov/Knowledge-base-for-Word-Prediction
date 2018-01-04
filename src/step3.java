@@ -3,14 +3,10 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.*;
-import org.apache.hadoop.mapreduce.Reducer.Context;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
-import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 public class step3 {
 	/**
      * The Input:
@@ -70,9 +66,9 @@ public class step3 {
     			sum_occ += Long.parseLong(val.toString());
     		}
     		Text newKey = new Text();
-    		newKey.set(oldKey);
+    		newKey.set(String.format("%s",oldKey));
     		Text newVal = new Text();
-    		newVal.set("" + sum_occ);
+    		newVal.set(String.format("%d",sum_occ));
     		context.write(newKey, newVal);
     	}
     }
@@ -90,6 +86,7 @@ public class step3 {
 		Job job = Job.getInstance(conf);
 		job.setJarByClass(step3.class);
 		job.setMapperClass(Map.class);
+		job.setCombinerClass(Reduce.class);
 		job.setReducerClass(Reduce.class);
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);

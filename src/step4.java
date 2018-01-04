@@ -3,16 +3,11 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.*;
-import org.apache.hadoop.mapreduce.Reducer.Context;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.mapreduce.lib.input.MultipleInputs;
-import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 public class step4 {
 	/**
 	 * The input:
@@ -32,17 +27,22 @@ public class step4 {
 			String w1 = words[0];
 			String w2 = words[1];   
 			int occur = Integer.parseInt(strings[1]) ;
+			Text text3=new Text();
+			text3.set(String.format("%d",occur));
 			Text text = new Text();
-			text.set(String.format("%s %s ",w1,w2));
-			Text text1 = new Text();
-			text1.set(String.format("%s %d",strings[0],occur));
+			text.set(String.format("%s %s",w1,w2));
 			if(words.length>2){
 				String w3=words[2];
+				Text text1 = new Text();
+				text1.set(String.format("%s %s %s %d",w1,w2,w3,occur));
 				Text text2=new Text();
-				text2.set(String.format("%s %s ",w2,w3));
+				text2.set(String.format("%s %s",w2,w3));
 				context.write(text2, text1);
+				context.write(text, text1);
 			}
-			context.write(text ,text1);
+			else{
+			context.write(text ,text3);
+			}
 		}
 	}
 
@@ -50,7 +50,7 @@ public class step4 {
 	 * The input:
 	 *      T n-gram /T occurrences
 	 *      program is program is good 4
-	 *      program is program is 	   5
+	 *      program is 	   5
 
 	 * The Output:
 	 *               T n-gram /T occurrences
@@ -59,7 +59,6 @@ public class step4 {
 	public static class Reduce extends Reducer<Text, Text, Text, Text> {
 		@Override
 		protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-			System.out.println("the key: "+key.toString());
 			String[] strings = key.toString().split(" ");
 			String w1 = strings[0];
 			String w2 = strings[1];
@@ -69,21 +68,17 @@ public class step4 {
 			boolean b1=false;
 			boolean b2=false;
 			for (Text val : values) {
-				//System.out.println("the value1: "+val.toString());
 				String[] s=val.toString().split(" ");
-				if(s.length%2==0){
-					System.out.println("we are setting the key to be: "+s[0]+s[1]+s[2]);
-					newKey.set(s[0]+" "+s[1]+" "+s[2]); 
+				if(s.length>1){
+					newKey.set(String.format("%s %s %s",s[0],s[1],s[2])); 
 					b1=true;
 				}
 				else{
-					System.out.println("we are set the value to be "+w1 + " " + w2+" "+occu);
-					occu=(int) Long.parseLong(s[2]);
-					newVal.set(w1 + " " + w2+" "+occu);
+					occu=(int) Long.parseLong(s[0]);
+					newVal.set(String.format("%s %s %d",w1,w2,occu));
 					b2=true;
 				}
 				if(b1&&b2){
-					System.out.println("The new key: "+newKey+" The new value: "+newVal);
 					context.write(newKey, newVal);
 					b1=false;
 				}
@@ -94,15 +89,13 @@ public class step4 {
 	  private static class myPartitioner extends Partitioner<Text, Text>{
 			@Override
 			public int getPartition(Text key, Text value, int numPartitions){
-				//System.out.println(key);
+				
 				return Math.abs(key.hashCode()) % numPartitions;
 			}
 	    	
 	    }
 	    
 	    public static void main(String[] args) throws Exception {
-			//System.out.println(args[1]);
-			//System.out.println(args[2]);
 			Configuration conf = new Configuration();
 			Job job = Job.getInstance(conf);
 			job.setJarByClass(step4.class);
@@ -112,7 +105,6 @@ public class step4 {
 			job.setOutputValueClass(Text.class);
 			job.setPartitionerClass(step4.myPartitioner.class);
 			job.setOutputFormatClass(TextOutputFormat.class);
-			//job.setInputFormatClass(TextInputFormat.class);
 			String input1="/output2/";
 			String input2="/output3/";
 			String output="/output4/";

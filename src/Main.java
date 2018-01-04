@@ -1,103 +1,146 @@
-import java.util.Date;
-import java.util.List;
+import org.apache.hadoop.mapreduce.TestMapCollection.StepFactory;
 import com.amazonaws.auth.AWSCredentialsProvider;
-//import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
-import com.amazonaws.auth.profile.ProfilesConfigFile;
+import com.amazonaws.services.ec2.AmazonEC2;
+import com.amazonaws.services.ec2.AmazonEC2ClientBuilder;
 import com.amazonaws.services.ec2.model.InstanceType;
 import com.amazonaws.services.elasticmapreduce.AmazonElasticMapReduce;
-import com.amazonaws.services.elasticmapreduce.AmazonElasticMapReduceClient;
-import com.amazonaws.services.elasticmapreduce.model.ClusterSummary;
-import com.amazonaws.services.elasticmapreduce.model.HadoopJarStepConfig;
-import com.amazonaws.services.elasticmapreduce.model.JobFlowInstancesConfig;
-import com.amazonaws.services.elasticmapreduce.model.ListClustersRequest;
-import com.amazonaws.services.elasticmapreduce.model.ListClustersResult;
-import com.amazonaws.services.elasticmapreduce.model.PlacementType;
-import com.amazonaws.services.elasticmapreduce.model.RunJobFlowRequest;
-import com.amazonaws.services.elasticmapreduce.model.RunJobFlowResult;
-import com.amazonaws.services.elasticmapreduce.model.StepConfig;
-import com.amazonaws.services.elasticmapreduce.util.StepFactory;
-import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.elasticmapreduce.AmazonElasticMapReduceClientBuilder;
+import com.amazonaws.services.elasticmapreduce.model.*;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 
-/**
- * main function
- * 	argumantens :
- * 		args[1] = 
- * 		args[2] = 
- * 	    args[3] = 
- * 	    args[4] = 
- */
-
-//s3://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/1gram/data
-//s3://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/3gram/data
 public class Main {
-	
-    static ProfilesConfigFile profile_file = new ProfilesConfigFile("credentials");
-    static AWSCredentials credentials = new ProfileCredentialsProvider(profile_file,"default").getCredentials();
-    static AmazonElasticMapReduce mapReduce =new AmazonElasticMapReduceClient(credentials);
-//    private static final String NEXT_ID = "-2";
-    public static void main(String[] args)  {
-   
-    	HadoopJarStepConfig hadoopJarStep = new HadoopJarStepConfig()
-    	    .withJar("s3n://assignment2dspmor/step1.jar") // This should be a full map reduce application.
-    	    .withMainClass("step1")
-    	    .withArgs("s3://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/1gram/data", "s3n://assignment2dspmor/");
-    	 
-    	StepConfig stepConfig = new StepConfig()
-    	    .withName("step1")
-    	    .withHadoopJarStep(hadoopJarStep)
-    	    .withActionOnFailure("TERMINATE_JOB_FLOW");
-    	 
-    	JobFlowInstancesConfig instances = new JobFlowInstancesConfig()
-    	    .withInstanceCount(2)
-    	    .withMasterInstanceType(InstanceType.M1Small.toString())
-    	    .withSlaveInstanceType(InstanceType.M1Small.toString())
-    	    .withHadoopVersion("2.6.0").withEc2KeyName("morKP")
-    	    .withKeepJobFlowAliveWhenNoSteps(false)
-    	    .withPlacement(new PlacementType("us-east-1a"));
-    	
-    	 
-//    	RunJobFlowRequest runFlowRequest = new RunJobFlowRequest()
-//    	    .withName("job1")
-//    	    .withInstances(instances)
-//    	    .withSteps(stepConfig)
-//    	    .withLogUri("s3n://assignment2dspmor/logs/")
-//    	    .withJobFlowRole("EMR_DefaultRole")
-//    	    .withServiceRole("");
-    	   
-    	   RunJobFlowRequest runFlowRequest = new RunJobFlowRequest()
-                   //.withAmiVersion("3.11.0")
-                   .withName("job1")
-                   .withInstances(instances)
-                   .withSteps(stepConfig)
-                   .withJobFlowRole("EMR_EC2_DefaultRole")
-                   .withServiceRole("EMR_DefaultRole")
-                   .withReleaseLabel("emr-4.6.0")
-                   .withLogUri("s3n://inoutlo2/logs/");/**/
+	public static AWSCredentialsProvider credentialsProvider;
+	public static AmazonS3 S3;
+	public static AmazonEC2 ec2;
+	public static AmazonElasticMapReduce emr;
+	public static void main(String[]args){
+		
+		credentialsProvider =new EnvironmentVariableCredentialsProvider();			
 
-    	RunJobFlowResult runJobFlowResult = mapReduce.runJobFlow(runFlowRequest);
-    	String jobFlowId = runJobFlowResult.getJobFlowId();
-    	System.out.println("Ran job flow with id: " + jobFlowId);
-    }
-    
-//   static String waitForCompletion(String jobFlowId) throws InterruptedException {
-//        String status = "";
-//        List<String> finalStatuses = Arrays.asList("TERMINATED", "TERMINATED_WITH_ERRORS");
-//        List<String> allStatuses = Arrays.asList("STARTING","BOOTSTRAPPING","RUNNING","WAITING","TERMINATING","TERMINATED","TERMINATED_WITH_ERRORS");
-//        ListClustersRequest request = new ListClustersRequest().withClusterStates(allStatuses);
-//        while (!finalStatuses.contains(status)) {
-//            Thread.sleep(5000);
-//            System.out.print(".");
-//            ListClustersResult result = mapReduce.listClusters(request);
-//            for (ClusterSummary cluster : result.getClusters())
-//                if (cluster.getId().equals(jobFlowId)) {
-//                    String curr_status = cluster.getStatus().getState().toUpperCase();
-//                    if (!curr_status.equals(status))
-//                        System.out.println("\nJob Flow status changed: "+curr_status);
-//                    status = curr_status;
-//                }
-//        }
-//        return status;
-    }
+		System.out.println("===========================================");
+		System.out.println("connect to aws & S3");
+		System.out.println("===========================================\n");
+
+		S3 = AmazonS3ClientBuilder.standard()
+				.withCredentials(credentialsProvider)
+				.withRegion("us-west-2")
+				.build();
+		//delete the output file if it exist
+				ObjectListing objects = S3.listObjects("assignment2dspmor", "outputAssignment2");
+				for (S3ObjectSummary s3ObjectSummary : objects.getObjectSummaries()) {
+					S3.deleteObject("assignment2dspmor", s3ObjectSummary.getKey());
+				}
+		System.out.println("===========================================");
+		System.out.println("connect to aws & ec2");
+		System.out.println("===========================================\n");
+
+		ec2 = AmazonEC2ClientBuilder.standard()
+				.withCredentials(credentialsProvider)
+				.withRegion("us-west-2")
+				.build();
+		System.out.println("creating a emr");
+		 emr= AmazonElasticMapReduceClientBuilder.standard()
+				.withCredentials(credentialsProvider)
+				.withRegion("us-west-2")
+				.build();
+		 
+		System.out.println( emr.listClusters());
+		 
+		StepFactory stepFactory = new StepFactory();
+		/*
+        step1
+		 */
+		HadoopJarStepConfig step1 = new HadoopJarStepConfig()
+				.withJar("s3://assignment2dspmor/step1.jar")
+				.withArgs("step1","null","s3n://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/1gram/data");
+
+		StepConfig stepOne = new StepConfig()
+				.withName("step1")
+				.withHadoopJarStep(step1)
+				.withActionOnFailure("TERMINATE_JOB_FLOW");
+		/*
+        step2
+		 */
+		HadoopJarStepConfig step2 = new HadoopJarStepConfig()
+				.withJar("s3://assignment2dspmor/step2.jar")
+				.withArgs("step2","null","s3n://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/2gram/data");
+
+		StepConfig stepTwo = new StepConfig()
+				.withName("step2")
+				.withHadoopJarStep(step2)
+				.withActionOnFailure("TERMINATE_JOB_FLOW");
+		/*
+        step3
+		 */
+		HadoopJarStepConfig step3 = new HadoopJarStepConfig()
+				.withJar("s3://assignment2dspmor/step3.jar")
+				.withArgs("step3","null","s3n://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/3gram/data");
+
+		StepConfig stepThree = new StepConfig()
+				.withName("step3")
+				.withHadoopJarStep(step3)
+				.withActionOnFailure("TERMINATE_JOB_FLOW");
+		/*
+        step4
+		 */
+		HadoopJarStepConfig step4 = new HadoopJarStepConfig()
+				.withJar("s3://assignment2dspmor/step4.jar")
+				.withArgs("step4");
+
+		StepConfig stepFour = new StepConfig()
+				.withName("step4")
+				.withHadoopJarStep(step4)
+				.withActionOnFailure("TERMINATE_JOB_FLOW");
+		/*
+        step5
+		 */
+		HadoopJarStepConfig step5 = new HadoopJarStepConfig()
+				.withJar("s3://assignment2dspmor/step5.jar")
+				.withArgs("step5");
+
+		StepConfig stepFive = new StepConfig()
+				.withName("step5")
+				.withHadoopJarStep(step5)
+				.withActionOnFailure("TERMINATE_JOB_FLOW");
+		/*
+        step6
+		 */
+		HadoopJarStepConfig step6 = new HadoopJarStepConfig()
+				.withJar("s3://assignment2dspmor/step6.jar")
+				.withArgs("step6","null","s3n://assignment2dspmor//outputAssignment2");
+
+		StepConfig stepSix = new StepConfig()
+				.withName("step6")
+				.withHadoopJarStep(step6)
+				.withActionOnFailure("TERMINATE_JOB_FLOW");
+		
+		JobFlowInstancesConfig instances = new JobFlowInstancesConfig()
+				.withInstanceCount(3)
+				.withMasterInstanceType(InstanceType.M3Xlarge.toString())
+				.withSlaveInstanceType(InstanceType.M3Xlarge.toString())
+				.withHadoopVersion("2.7.3")                                 
+				.withEc2KeyName("morKP")         
+				.withPlacement(new PlacementType("us-west-2a"))
+				.withKeepJobFlowAliveWhenNoSteps(false);
+
+		System.out.println("give the cluster all our steps");
+		RunJobFlowRequest request = new RunJobFlowRequest()
+				.withName("Assignment2")                                   
+				.withInstances(instances)
+				.withSteps(stepOne,stepTwo,stepThree,stepFour,stepFive,stepSix)
+				.withLogUri("s3n://assignment2dspmor/logs/")
+				.withServiceRole("EMR_DefaultRole")
+				.withJobFlowRole("EMR_EC2_DefaultRole")
+				.withReleaseLabel("emr-5.11.0");
+
+		RunJobFlowResult result = emr.runJobFlow(request);
+		String id=result.getJobFlowId();
+		System.out.println("our cluster id: "+id);
+
+	}
+}
+

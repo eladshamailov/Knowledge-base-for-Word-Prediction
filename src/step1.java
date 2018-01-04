@@ -7,8 +7,6 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 
 public class step1 {
@@ -30,23 +28,18 @@ public class step1 {
 
 		@Override
 		public void map (LongWritable key, Text value, Context context)  throws IOException, InterruptedException {
-			//System.out.println(value);
 			String[] strings = value.toString().split("\t");
-			//System.out.println("length: "+strings.length);
 			String w1 = strings[0];
-			//System.out.println("the word :"+w1);
-			//System.out.println("the year: "+strings[1]);
 			if(!(w1.equals("*"))){
-			int occur = Integer.parseInt(strings[2]);
-			Text text = new Text();
-			text.set(String.format("%s ",w1));
-			Text text1 = new Text();
-			Text text2=new Text();
-			text2.set(String.format("*"));
-			text1.set(String.format("%d",occur));
-			//System.out.println("the output: "+text.toString()+" "+text1.toString());
-			context.write(text,text1);
-			context.write(text2,text1);
+				int occur = Integer.parseInt(strings[2]);
+				Text text = new Text();
+				text.set(String.format("%s",w1));
+				Text text1 = new Text();
+				Text text2=new Text();
+				text2.set(String.format("*"));
+				text1.set(String.format("%d",occur));
+				context.write(text,text1);
+				context.write(text2,text1);
 			}
 		}
 
@@ -72,14 +65,15 @@ public class step1 {
 		protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
 			String w1 = key.toString();
 			int sum_occ = 0;
+
 			for (Text val : values) {
 				sum_occ += Long.parseLong(val.toString());
 			}
+
 			Text newKey = new Text();
-			newKey.set(w1);
+			newKey.set(String.format("%s",w1));
 			Text newVal = new Text();
-			newVal.set("" + sum_occ);
-//			System.out.println("the key: "+newKey+" the value: "+newVal);
+			newVal.set(String.format("%d",sum_occ));
 			context.write(newKey, newVal);
 		}
 	}
@@ -97,6 +91,7 @@ public class step1 {
 		Job job = Job.getInstance(conf);
 		job.setJarByClass(step1.class);
 		job.setMapperClass(Map.class);
+		job.setCombinerClass(Reduce.class);
 		job.setReducerClass(Reduce.class);
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);
